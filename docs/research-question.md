@@ -21,7 +21,7 @@ All statuses below are **provisional**. The evidence supporting them predates fo
 | **H1** | A policy whose observation includes a representation of future interaction quality achieves higher grasp success and/or lower timing regret than an otherwise-identical policy without it | **Split by training budget.** Supported as a sample-efficiency effect; not supported as a final-performance effect. |
 | **H2** | The benefit of opportunity-awareness increases with disturbance magnitude | **Undetermined.** Previously reported as rejected on a 3-seed sample; contradicted by an 8-seed sample. |
 | **H3** | An opportunity-aware policy generalises better to disturbance regimes outside its training distribution | **Not tested.** Requires a train/test distribution split that was not built. |
-| **H4** | How much of the achievable gap to a future-aware oracle does the opportunity-aware policy close? | **Not tested.** The oracle timing reference was specified but not implemented, so timing regret cannot be computed. |
+| **H4** | How much of the achievable gap to a future-aware oracle does the opportunity-aware policy close? | **Not yet tested at scale.** The oracle timing reference (`algorithms/oracle.py`) and the experiment (`experiments/oracle_regret.py`) exist; no run at an adequate seed count has been reported. |
 
 ### H1 (primary)
 
@@ -43,7 +43,7 @@ Whether the benefit of opportunity-awareness grows with disturbance magnitude wa
 
 ### H3 and H4 (open)
 
-Neither was tested. **H3** requires training on one severity and evaluating on another; **H4** requires an oracle baseline with access to the true future trajectory, against which timing regret would be measured. Both are recorded here rather than silently dropped, and the environment and metrics already accommodate them: the opportunity representation is swappable by design, and the oracle is specified as an evaluation reference that is never used as a policy input.
+Neither has been tested. **H3** requires training on one severity and evaluating on another. **H4** requires an oracle with access to the true future, against which timing regret is measured. That oracle now exists (`algorithms/oracle.py`), and `experiments/oracle_regret.py` reports timing regret and the gap-closed ratio (B4 − B2) / (oracle − B2), so H4 needs only an adequately seeded run. Both are recorded here rather than silently dropped, and the environment and metrics already accommodate them: the opportunity representation is swappable by design, and the oracle is specified as an evaluation reference that is never used as a policy input.
 
 ## 4. Criteria for support and rejection
 

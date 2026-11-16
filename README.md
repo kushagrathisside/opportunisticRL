@@ -26,7 +26,7 @@ The most defensible reading is that the base observation already contains relati
 | H1 | Opportunity representation improves grasp decision-making | **Split.** Supported for sample efficiency; not supported for final performance. |
 | H2 | The benefit grows with disturbance magnitude | **Undetermined.** A 3-seed sample and an 8-seed sample give opposite orderings. |
 | H3 | Opportunity-awareness generalises better under distribution shift | **Not tested.** The train/test split was never built. |
-| H4 | How much of the gap to a future-aware oracle is closed | **Not tested.** The oracle was specified but not implemented. |
+| H4 | How much of the gap to a future-aware oracle is closed | **Not yet tested at scale.** The oracle and `experiments/oracle_regret.py` now exist; the experiment has not been run at an adequate seed count. |
 
 Full statements, pre-registered support and rejection criteria, and evidence: [docs/research-question.md](docs/research-question.md) and [docs/evaluation.md](docs/evaluation.md).
 
@@ -34,7 +34,7 @@ Full statements, pre-registered support and rejection criteria, and evidence: [d
 
 **Built and validated:** a Gazebo Harmonic + VRX simulation with a Franka Panda mounted on a WAM-V and a validated conventional grasp against the live stack; a ROS2 state-estimation pipeline; a fast pure-Python `SimulationInterface` backend with a source-faithful Gerstner/Pierson-Moskowitz wave disturbance and an independently moving target; a Gymnasium `DynamicGraspEnv` with a fixed 47-dimensional observation schema and a five-term reward; the baseline ladder B0, B1, B2 and B4; a leakage-safe analytic `OpportunityEstimator`; and the matched H1 comparison across seeds, budgets and severities.
 
-**Not built:** B3 (temporal RL), the oracle timing reference, the distribution-shift split, and the ROS2/Gazebo training backend — no policy has ever been trained or evaluated through ROS2. Specification-to-implementation divergences, including a feasibility predicate simpler than the one specified, are collected in [docs/rl-formulation.md §9](docs/rl-formulation.md#9-divergences-from-specification-collected).
+**Not built:** B3 (temporal RL), the distribution-shift split, and the ROS2/Gazebo training backend — no policy has ever been trained or evaluated through ROS2. Specification-to-implementation divergences, including a feasibility predicate simpler than the one specified, are collected in [docs/rl-formulation.md §9](docs/rl-formulation.md#9-divergences-from-specification-collected).
 
 ## Documentation
 
@@ -80,6 +80,11 @@ python3 experiments/evaluation_matrix.py --disturbance moving_target --grasp-dur
 # sydney_regatta_default configuration is deliberately easy (the target is always
 # graspable, so timing is irrelevant).
 python3 experiments/train_b2.py --disturbance moving_target --seed 0
+
+# H4: timing regret against the oracle timing reference, and the share of
+# B2's gap to the oracle that B4 closes (trains B2 and B4 per seed).
+python3 experiments/oracle_regret.py --disturbance moving_target \
+    --grasp-duration-steps 3 --total-steps 80000 --seeds 0 1 2
 
 # The H1 sweep behind the reported figure.
 python3 experiments/learning_curve_h1.py \

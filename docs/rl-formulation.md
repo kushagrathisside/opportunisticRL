@@ -124,16 +124,18 @@ Implemented in order, each validated before the next was attempted. All share th
 | B2 | Standard RL (reactive) | PPO over the base observation only | Yes | Yes |
 | B3 | Temporal RL | B2 plus observation history (stacked frames or a recurrent policy) | Yes | **No** |
 | B4 | Opportunity-aware RL | B2 plus the appended estimator output | Yes | Yes |
-| — | Oracle timing reference | Full future trajectory to best achievable grasp time, computed offline | Not a policy | **No** |
+| — | Oracle timing reference | Commits exactly when a grasp committed now would succeed, found by playing the commitment forward on a copy of the deterministic env | Not a policy | Yes (`algorithms/oracle.py`) |
 
-B3 was conditional on evidence of meaningful temporal dependence; that evidence was not gathered, and B3 was not built. The oracle was specified as the reference against which timing regret (H4) would be measured; without it, timing regret is not computable, which is why H4 is untested.
+B3 was conditional on evidence of meaningful temporal dependence; that evidence was not gathered, and B3 was not built.
+
+The oracle is the reference against which timing regret (H4) is measured. It reads the true future, which is permitted only because it is an evaluation reference: no policy observes it or trains against it. Two limits bound it. It optimises timing only (`WAIT` / `ATTEMPT_GRASP`, never `APPROACH`), which is tight in the shipped configurations, where the standby pose is already well inside the workspace radius. And it is exact only on a deterministic backend such as `FastSimulator`.
 
 ## 9. Divergences from specification, collected
 
 1. **Feasibility predicate reduced** from a four-condition geometric definition to distance plus relative speed; `graspable`, orientation error, and angular velocity are not evaluated (Section 5).
 2. **End-effector velocity is a zero proxy**, so relative velocity is effectively target velocity in the vessel frame (Section 5).
 3. **Collision penalty inert** — the fast backend has no contact model, so `C_collision` never fires (Section 6).
-4. **B3 and the oracle were not built** (Section 8), leaving H4 untestable.
+4. **B3 was not built** (Section 8). The oracle was added later, so H4 is now testable but has not yet been run at scale.
 5. **Uncertainty observation fields never enabled** (Section 3).
 6. **Only one of two backends exists** — no policy has been trained or evaluated through ROS2/Gazebo (see [architecture.md §2](architecture.md#2-the-two-backend-design)).
 

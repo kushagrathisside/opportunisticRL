@@ -53,7 +53,7 @@ Three things stand between the current state and a defensible result:
 2. **Resolve H2**, whose verdict differs between the 3-seed and 8-seed samples and is currently undetermined.
 3. **Commit the statistical analysis as a script**, so that the reported figures can be reproduced by running the repository rather than recomputed by hand.
 
-Beyond that, the open research work is unchanged: the oracle timing reference (H4), the distribution-shift split (H3), temporal RL (B3), and training against the ROS2/Gazebo backend.
+Beyond that, the open research work is: running H4 at an adequate seed count (the oracle timing reference and `experiments/oracle_regret.py` now exist), the distribution-shift split (H3), temporal RL (B3), and training against the ROS2/Gazebo backend.
 
 ## 5. Non-goals
 
