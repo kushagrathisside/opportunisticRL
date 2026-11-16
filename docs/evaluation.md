@@ -119,4 +119,4 @@ The 8-seed ordering also admits a coherent mechanism: mild severity leaves a goo
 
 ## 10. Outstanding work
 
-The following were specified but not built, and are recorded as open rather than folded into the conclusions above: the oracle timing-regret reference required by **H4**; the train/test distribution split required by **H3**; the temporal-RL baseline **B3**; and training against the ROS2/Gazebo backend. See [research-question.md](research-question.md) for the per-hypothesis status and [project-plan.md](project-plan.md) for how each relates to the milestone sequence.
+The oracle timing reference required by **H4** has since been built (`algorithms/oracle.py`, run via `experiments/oracle_regret.py`), but no H4 result is reported here yet. The following were specified but not built, and are recorded as open rather than folded into the conclusions above: the train/test distribution split required by **H3**; the temporal-RL baseline **B3**; and training against the ROS2/Gazebo backend. See [research-question.md](research-question.md) for the per-hypothesis status and [project-plan.md](project-plan.md) for how each relates to the milestone sequence.
