@@ -3,7 +3,9 @@
 disturbance config across multiple seeds and print a comparison table.
 
 Baselines evaluated: random floor, B0 (immediate heuristic), B1 (reactive
-threshold heuristic), and B2 (PPO, if a trained checkpoint is provided).
+threshold heuristic), the oracle timing reference (an upper bound that
+reads the true future; see algorithms/oracle.py), and B2 (PPO, if a
+trained checkpoint is provided).
 This is the shared harness every later milestone's comparison reuses --
 M9's H1 comparison (B2 vs B4) is the same matrix with B4 added.
 
@@ -26,6 +28,7 @@ from pathlib import Path
 
 from opportunity_rl.algorithms.heuristic import B0ImmediatePolicy, B1ThresholdPolicy
 from opportunity_rl.algorithms.interface import EvaluationResult
+from opportunity_rl.algorithms.oracle import OracleTimingPolicy
 from opportunity_rl.algorithms.random_policy import RandomPolicy
 from opportunity_rl.env.env import DynamicGraspEnv, EnvConfig
 from opportunity_rl.sim.disturbance_config import load_disturbance_config
@@ -83,7 +86,12 @@ def main() -> None:
     parser.add_argument("--out", type=str, default=None)
     args = parser.parse_args()
 
-    baselines: dict[str, list[EvaluationResult]] = {"random": [], "B0": [], "B1": []}
+    baselines: dict[str, list[EvaluationResult]] = {
+        "random": [],
+        "B0": [],
+        "B1": [],
+        "oracle": [],
+    }
 
     def make_env() -> DynamicGraspEnv:
         return _make_env(args.disturbance, args.grasp_duration_steps)
@@ -98,6 +106,9 @@ def main() -> None:
         )
         baselines["B1"].append(
             B1ThresholdPolicy(make_env()).evaluate(args.eval_episodes, seed=eval_seed)
+        )
+        baselines["oracle"].append(
+            OracleTimingPolicy(make_env()).evaluate(args.eval_episodes, seed=eval_seed)
         )
 
     if args.b2_checkpoint:
